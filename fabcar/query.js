@@ -11,13 +11,47 @@
 var hfc = require('fabric-client');
 var path = require('path');
 
+// print process.argv
+var argumentsToPass = []
+var functionToCall = ''
+var peerNo = 0
+process.argv.forEach(function (val, index, array) {
+    if(index === 2) {
+        peerNo = val
+    }
+    if(index === 3) {
+        functionToCall = val
+    }
+    else if (index >= 4) {
+        argumentsToPass.push(val)
+    }
+});
+
+if (peerNo == 0){
+    console.log("portNo ", portNo)
+    var portNo = '7051'
+} else if (peerNo == 1){
+    console.log("portNo ", portNo)
+    var portNo = '8051'
+} else if (peerNo == 2){
+    console.log("portNo ", portNo)
+    var portNo = '9051'
+} else if (peerNo == 3){
+    console.log("portNo ", portNo)
+    var portNo = '10051'
+}  
+
+console.log("portNo ", portNo)
+
 var options = {
     wallet_path: path.join(__dirname, './creds'),
     user_id: 'PeerAdmin',
     channel_id: 'mychannel',
     chaincode_id: 'mycc',
-    network_url: 'grpc://localhost:7051',
+    network_url: 'grpc://localhost:' + portNo
 };
+
+console.log("Network_url ", options.network_url)
 
 var channel = {};
 var client = null;
@@ -54,8 +88,8 @@ Promise.resolve().then(() => {
     const request = {
         chaincodeId: options.chaincode_id,
         txId: transaction_id,
-        fcn: 'queryUser',
-        args: ['1234567']
+        fcn: functionToCall,
+        args: argumentsToPass
     };
     return channel.queryByChaincode(request);
 }).then((query_responses) => {

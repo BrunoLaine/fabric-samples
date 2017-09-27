@@ -16,11 +16,23 @@ var options = {
     wallet_path: path.join(__dirname, './creds'),
     user_id: 'PeerAdmin',
     channel_id: 'mychannel',
-    chaincode_id: 'fabcar',
+    chaincode_id: 'mycc',
     peer_url: 'grpc://localhost:7051',
     event_url: 'grpc://localhost:7053',
     orderer_url: 'grpc://localhost:7050'
 };
+
+// print process.argv
+var argumentsToPass = []
+var functionToCall = ''
+process.argv.forEach(function (val, index, array) {
+    if(index === 2) {
+        functionToCall = val
+    }
+    else if (index > 2) {
+        argumentsToPass.push(val)
+    }
+});
 
 var channel = {};
 var client = null;
@@ -54,8 +66,8 @@ Promise.resolve().then(() => {
     var request = {
         targets: targets,
         chaincodeId: options.chaincode_id,
-        fcn: 'createCar',
-        args: ['CAR10', 'Chevy', 'Volt', 'Red', 'Nick'],
+        fcn: functionToCall,
+        args: argumentsToPass,
         chainId: options.channel_id,
         txId: tx_id
     };

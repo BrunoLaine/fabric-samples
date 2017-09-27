@@ -98,7 +98,8 @@ func (s *SmartContract) Invoke(APIstub shim.ChaincodeStubInterface) sc.Response 
 		return s.changeUserEmail(APIstub, args)
 	}
 
-	return shim.Error("Invalid Smart Contract function name.")
+	return shim.Error("Not a valid Smart Contract function, try: initLedger, queryUser <ID>, createUser <ID> <name> <bank> <accountNo> <email>, queryAllUsers, changeUserEmail <ID> <newEmail>")
+
 }
 
 func (s *SmartContract) queryCar(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {

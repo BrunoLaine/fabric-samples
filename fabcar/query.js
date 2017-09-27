@@ -16,7 +16,7 @@ var options = {
     user_id: 'PeerAdmin',
     channel_id: 'mychannel',
     chaincode_id: 'fabcar',
-    network_url: 'grpc://localhost:7051',
+    network_url: 'grpc://192.168.99.100:7051',
 };
 
 var channel = {};
@@ -45,11 +45,17 @@ Promise.resolve().then(() => {
 
     // queryCar - requires 1 argument, ex: args: ['CAR4'],
     // queryAllCars - requires no arguments , ex: args: [''],
+//    const request = {
+//        chaincodeId: options.chaincode_id,
+//        txId: transaction_id,
+//        fcn: 'queryAllCars',
+//        args: ['']
+//    };
     const request = {
         chaincodeId: options.chaincode_id,
         txId: transaction_id,
-        fcn: 'queryAllCars',
-        args: ['']
+        fcn: 'queryUser',
+        args: ['1234567']
     };
     return channel.queryByChaincode(request);
 }).then((query_responses) => {

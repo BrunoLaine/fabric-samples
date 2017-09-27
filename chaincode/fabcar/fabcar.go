@@ -32,7 +32,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"strconv"
+//	"strconv"
 
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	sc "github.com/hyperledger/fabric/protos/peer"
@@ -48,7 +48,15 @@ type Car struct {
 	Model  string `json:"model"`
 	Colour string `json:"colour"`
 	Owner  string `json:"owner"`
-	Year   string `json:"year"`
+}
+
+// Define the car structure, with 4 properties.  Structure tags are used by encoding/json library
+type User struct {
+	ID          string `json:"id"`
+	Name        string `json:"name"`
+	Bank        string `json:"bank"`
+	AccountNo   string `json:"accountno"`
+	Email       string `json:"email"`
 }
 
 /*
@@ -70,8 +78,12 @@ func (s *SmartContract) Invoke(APIstub shim.ChaincodeStubInterface) sc.Response 
 	// Route to the appropriate handler function to interact with the ledger appropriately
 	if function == "queryCar" {
 		return s.queryCar(APIstub, args)
+	} else if function == "queryUser" {
+		return s.queryUser(APIstub, args)
 	} else if function == "initLedger" {
 		return s.initLedger(APIstub)
+	} else if function == "presetLedger" {
+		return s.presetLedger(APIstub)
 	} else if function == "createCar" {
 		return s.createCar(APIstub, args)
 	} else if function == "queryAllCars" {
@@ -93,18 +105,28 @@ func (s *SmartContract) queryCar(APIstub shim.ChaincodeStubInterface, args []str
 	return shim.Success(carAsBytes)
 }
 
+func (s *SmartContract) queryUser(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
+
+	if len(args) != 1 {
+		return shim.Error("Incorrect number of arguments. Expecting 1")
+	}
+
+	userAsBytes, _ := APIstub.GetState(args[0])
+	return shim.Success(userAsBytes)
+}
+
 func (s *SmartContract) initLedger(APIstub shim.ChaincodeStubInterface) sc.Response {
-	cars := []Car{
-		Car{Make: "Toyota", Model: "Prius", Colour: "blue", Owner: "Tomoko", Year: "2010"},
-		Car{Make: "Ford", Model: "Mustang", Colour: "red", Owner: "Brad", Year: "2010"},
-		Car{Make: "Hyundai", Model: "Tucson", Colour: "green", Owner: "Jin Soo", Year: "2010"},
-		Car{Make: "Volkswagen", Model: "Passat", Colour: "yellow", Owner: "Max", Year: "2010"},
-		Car{Make: "Tesla", Model: "S", Colour: "black", Owner: "Adriana", Year: "2010"},
-		Car{Make: "Peugeot", Model: "205", Colour: "purple", Owner: "Michel", Year: "2010"},
-		Car{Make: "Chery", Model: "S22L", Colour: "white", Owner: "Aarav", Year: "2010"},
-		Car{Make: "Fiat", Model: "Punto", Colour: "violet", Owner: "Pari", Year: "2010"},
-		Car{Make: "Tata", Model: "Nano", Colour: "indigo", Owner: "Valeria", Year: "2010"},
-		Car{Make: "Holden", Model: "Barina", Colour: "brown", Owner: "Shotaro", Year: "2010"},
+	/*cars := []Car{
+		Car{Make: "Toyota", Model: "Prius", Colour: "blue", Owner: "Tomoko"},
+		Car{Make: "Ford", Model: "Mustang", Colour: "red", Owner: "Brad"},
+		Car{Make: "Hyundai", Model: "Tucson", Colour: "green", Owner: "Jin Soo"},
+		Car{Make: "Volkswagen", Model: "Passat", Colour: "yellow", Owner: "Max"},
+		Car{Make: "Tesla", Model: "S", Colour: "black", Owner: "Adriana"},
+		Car{Make: "Peugeot", Model: "205", Colour: "purple", Owner: "Michel"},
+		Car{Make: "Chery", Model: "S22L", Colour: "white", Owner: "Aarav"},
+		Car{Make: "Fiat", Model: "Punto", Colour: "violet", Owner: "Pari"},
+		Car{Make: "Tata", Model: "Nano", Colour: "indigo", Owner: "Valeria"},
+		Car{Make: "Holden", Model: "Barina", Colour: "brown", Owner: "Shotaro"},
 	}
 
 	i := 0
@@ -113,6 +135,43 @@ func (s *SmartContract) initLedger(APIstub shim.ChaincodeStubInterface) sc.Respo
 		carAsBytes, _ := json.Marshal(cars[i])
 		APIstub.PutState("CAR"+strconv.Itoa(i), carAsBytes)
 		fmt.Println("Added", cars[i])
+		i = i + 1
+	}
+
+	return shim.Success(nil) */
+	users := []User{
+		User{ID: "1234567", Name: "Bruno", Bank: "maybank", AccountNo: "010234567", Email: "bruno@gmail.com"},
+		User{ID: "1234568", Name: "Lionel", Bank: "cimb", AccountNo: "33323456712", Email: "lionel@yahoo.com"},
+		User{ID: "1234569", Name: "Dong", Bank: "ambank", AccountNo: "0102345677890", Email: "dong@hotmail.com"},
+		User{ID: "1234570", Name: "Silong", Bank: "maybank", AccountNo: "010388567", Email: "silong@tmnet.com"},
+	}
+
+	i := 0
+	for i < len(users) {
+		fmt.Println("i is ", i)
+		userAsBytes, _ := json.Marshal(users[i])
+		APIstub.PutState(users[i].ID, userAsBytes)
+		fmt.Println("Added", users[i])
+		i = i + 1
+	}
+
+	return shim.Success(nil)
+}
+
+func (s *SmartContract) presetLedger(APIstub shim.ChaincodeStubInterface) sc.Response {
+	users := []User{
+		User{ID: "1234567", Name: "Bruno", Bank: "maybank", AccountNo: "010234567", Email: "bruno@gmail.com"},
+		User{ID: "1234568", Name: "Lionel", Bank: "cimb", AccountNo: "33323456712", Email: "lionel@yahoo.com"},
+		User{ID: "1234569", Name: "Dong", Bank: "ambank", AccountNo: "0102345677890", Email: "dong@hotmail.com"},
+		User{ID: "1234570", Name: "Silong", Bank: "maybank", AccountNo: "010388567", Email: "silong@tmnet.com"},
+	}
+
+	i := 0
+	for i < len(users) {
+		fmt.Println("i is ", i)
+		userAsBytes, _ := json.Marshal(users[i])
+		APIstub.PutState(users[i].ID, userAsBytes)
+		fmt.Println("Added", users[i])
 		i = i + 1
 	}
 

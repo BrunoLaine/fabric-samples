@@ -269,7 +269,7 @@ func (s *SmartContract) queryAllUsers(APIstub shim.ChaincodeStubInterface) sc.Re
 
 	// buffer is a JSON array containing QueryResults
 	var buffer bytes.Buffer
-	buffer.WriteString("[")
+	//buffer.WriteString("[")
 
 	bArrayMemberAlreadyWritten := false
 	for resultsIterator.HasNext() {
@@ -281,18 +281,18 @@ func (s *SmartContract) queryAllUsers(APIstub shim.ChaincodeStubInterface) sc.Re
 		if bArrayMemberAlreadyWritten == true {
 			buffer.WriteString(",")
 		}
-		buffer.WriteString("{\"Key\":")
-		buffer.WriteString("\"")
-		buffer.WriteString(queryResponse.Key)
-		buffer.WriteString("\"")
+		//buffer.WriteString("{\"Key\":")
+		//buffer.WriteString("\"")
+		//buffer.WriteString(queryResponse.Key)
+		//buffer.WriteString("\"")
 
-		buffer.WriteString(", \"Record\":")
+		//buffer.WriteString(", \"Record\":")
 		// Record is a JSON object, so we write as-is
 		buffer.WriteString(string(queryResponse.Value))
-		buffer.WriteString("}")
+		//buffer.WriteString("}")
 		bArrayMemberAlreadyWritten = true
 	}
-	buffer.WriteString("]")
+	//buffer.WriteString("]")
 	
 	fmt.Printf("- queryAllUsers:\n%s\n", buffer.String())
 
